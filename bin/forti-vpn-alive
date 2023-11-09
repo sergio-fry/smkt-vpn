@@ -2,6 +2,11 @@
 
 $LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__), '../lib')))
 
+require 'logger'
 require 'forti/alive/connection'
 
-Forti::Alive::Connection.start
+Async do
+  Forti::Alive::Connection.new(
+    logger: Logger.new($stdout)
+  ).start
+end
