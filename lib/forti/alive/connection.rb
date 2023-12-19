@@ -51,6 +51,7 @@ module Forti
 
       def stop
         @job.stop
+        @job = nil
       end
     end
   end
