@@ -34,8 +34,8 @@ module Forti
         return if @job.nil? || @job.status != :running
 
         Timeout.timeout(5) do
-          cmd = TTY::Command.new(pty: true)
-          out, err = cmd.run 'curl https://gitlab.samokat.io/users/sign_in'
+          cmd = TTY::Command.new(printer: :quiet)
+          _, err = cmd.run 'curl https://gitlab.samokat.io/users/sign_in'
           logger.error(err) if err
         end
       rescue Timeout::Error, SocketError, TTY::Command::ExitError => ex
