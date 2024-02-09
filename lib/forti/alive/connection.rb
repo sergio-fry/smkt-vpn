@@ -25,7 +25,7 @@ module Forti
               up
             end
 
-            sleep 10
+            sleep 120
           end
         end
       end
