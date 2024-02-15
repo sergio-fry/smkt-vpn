@@ -47,7 +47,7 @@ module Forti
       def up
         @job = Async do
           cmd = TTY::Command.new(pty: true)
-          cmd.run 'openfortivpn -c /Users/sergei/.forti'
+          cmd.run 'sudo openfortivpn -c /Users/sergei/.forti'
         end
       end
 
