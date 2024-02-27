@@ -25,7 +25,7 @@ module Forti
               up
             end
 
-            sleep 120
+            sleep 30
           end
         end
       end
@@ -35,18 +35,20 @@ module Forti
 
         Timeout.timeout(5) do
           cmd = TTY::Command.new(printer: :quiet)
-          _, err = cmd.run 'curl https://gitlab.samokat.io/users/sign_in'
-          logger.error(err) if err
+          _, err = cmd.run 'curl -sSf --head https://gitlab.samokat.io/users/sign_in > /dev/null'
+          logger.error(err) unless err == ''
+
+          err == ''
         end
-      rescue Timeout::Error, SocketError, TTY::Command::ExitError => ex
-        logger.error ex
+      rescue Timeout::Error, SocketError, TTY::Command::ExitError => e
+        logger.error e
 
         false
       end
 
       def up
         @job = Async do
-          cmd = TTY::Command.new(pty: true)
+          cmd = TTY::Command.new(pty: true, printer: :null)
           cmd.run 'sudo openfortivpn -c /Users/sergei/.forti'
         end
       end
