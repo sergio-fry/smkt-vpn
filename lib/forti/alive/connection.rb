@@ -35,7 +35,7 @@ module Forti
 
         Timeout.timeout(5) do
           cmd = TTY::Command.new(printer: :quiet)
-          _, err = cmd.run 'curl -sSf --head https://gitlab.samokat.io/users/sign_in > /dev/null'
+          _, err = cmd.run "curl -sSf -H 'PRIVATE-TOKEN: #{ENV.fetch('PRIVATE_TOKEN')}' https://gitlab.samokat.io/api/v4/version > /dev/null"
           logger.error(err) unless err == ''
 
           err == ''
