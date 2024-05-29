@@ -10,6 +10,7 @@ module Forti
 
       def initialize(logger:)
         @logger = logger
+        @job = nil
       end
 
       def start
@@ -20,12 +21,19 @@ module Forti
             if alive?
               logger.info 'alive'
             else
+              logger.warn 'down'
               stop
-              logger.error 'down'
               up
+
+              until alive?
+                logger.info 'staring up..'
+                sleep 1
+              end
+
+              logger.info 'alive'
             end
 
-            sleep 30
+            sleep ENV.fetch('CHECK_INTERVAL').to_i
           end
         end
       end
@@ -36,12 +44,12 @@ module Forti
         Timeout.timeout(5) do
           cmd = TTY::Command.new(printer: :quiet)
           _, err = cmd.run "curl -sSf -H 'PRIVATE-TOKEN: #{ENV.fetch('PRIVATE_TOKEN')}' https://gitlab.samokat.io/api/v4/version > /dev/null"
-          logger.error(err) unless err == ''
+          # logger.error(err) unless err == ''
 
           err == ''
         end
       rescue Timeout::Error, SocketError, TTY::Command::ExitError => e
-        logger.error e
+        # logger.error e
 
         false
       end
